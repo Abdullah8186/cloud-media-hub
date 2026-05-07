@@ -1,225 +1,241 @@
 require("dotenv").config();
 
 const express = require("express");
-const cors = require("cors");
-const multer = require("multer");
 const mongoose = require("mongoose");
+const multer = require("multer");
+const cors = require("cors");
 const path = require("path");
-const fs = require("fs");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const app = express();
-const PORT = process.env.PORT || 5001;
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-if (!fs.existsSync("uploads")) {
-    fs.mkdirSync("uploads");
-}
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log(err));
 
-app.use("/uploads", express.static("uploads"));
+/* =========================
+   USER MODEL
+========================= */
 
-async function connectDB() {
-    try {
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log("MongoDB Connected");
-    } catch (error) {
-        console.log("MongoDB Connection Error:", error);
-    }
-}
+const userSchema = new mongoose.Schema({
+  username: String,
+  email: String,
+  password: String
+});
 
-connectDB();
+const User = mongoose.model("User", userSchema);
+
+/* =========================
+   MEDIA MODEL
+========================= */
 
 const mediaSchema = new mongoose.Schema({
-    title: String,
-    description: String,
-    fileName: String,
-    imageUrl: String,
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
+  title: String,
+  description: String,
+  imageUrl: String,
+  createdBy: String,
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 const Media = mongoose.model("Media", mediaSchema);
 
+/* =========================
+   MULTER
+========================= */
+
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "uploads/");
-    },
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
 
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname));
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage });
+
+/* =========================
+   AUTH MIDDLEWARE
+========================= */
+
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: "Access denied" });
+  }
+
+  try {
+    const verified = jwt.verify(token, "secretkey");
+    req.user = verified;
+    next();
+  } catch (err) {
+    res.status(400).json({ message: "Invalid token" });
+  }
+};
+
+/* =========================
+   AUTH ROUTES
+========================= */
+
+app.post("/api/register", async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({
+        message: "User already exists"
+      });
     }
-});
 
-const upload = multer({
-    storage: storage,
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    limits: {
-        fileSize: 5 * 1024 * 1024
-    },
-
-    fileFilter: function (req, file, cb) {
-        const allowedTypes = /jpeg|jpg|png|gif/;
-
-        const extname = allowedTypes.test(
-            path.extname(file.originalname).toLowerCase()
-        );
-
-        const mimetype = allowedTypes.test(file.mimetype);
-
-        if (extname && mimetype) {
-            cb(null, true);
-        } else {
-            cb(new Error("Only JPG, PNG, JPEG and GIF images are allowed."));
-        }
-    }
-});
-
-app.get("/", (req, res) => {
-    res.send("Cloud Media Hub API is running");
-});
-
-app.get("/api/health", (req, res) => {
-    res.json({
-        status: "OK",
-        message: "Backend server is working"
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword
     });
+
+    await newUser.save();
+
+    res.json({
+      message: "User registered successfully"
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
+
+app.post("/api/login", async (req, res) => {
+  try {
+
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "User not found"
+      });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+
+    if (!validPassword) {
+      return res.status(400).json({
+        message: "Invalid password"
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email
+      },
+      "secretkey"
+    );
+
+    res.json({
+      token,
+      username: user.username
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* =========================
+   MEDIA ROUTES
+========================= */
 
 app.get("/api/media", async (req, res) => {
-    try {
-        const mediaItems = await Media.find().sort({ createdAt: -1 });
-        res.json(mediaItems);
-    } catch (error) {
-        console.log("FETCH MEDIA ERROR:", error);
-
-        res.status(500).json({
-            message: error.message
-        });
-    }
+  try {
+    const media = await Media.find().sort({ createdAt: -1 });
+    res.json(media);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.post("/api/media", (req, res) => {
-    upload.single("mediaFile")(req, res, async function (err) {
-        if (err instanceof multer.MulterError) {
-            return res.status(400).json({
-                message: "File is too large. Maximum size is 5MB."
-            });
-        }
+app.post(
+  "/api/media",
+  verifyToken,
+  upload.single("image"),
+  async (req, res) => {
 
-        if (err) {
-            return res.status(400).json({
-                message: err.message
-            });
-        }
+    try {
 
-        if (!req.body.title || !req.body.description) {
-            return res.status(400).json({
-                message: "Title and description are required."
-            });
-        }
+      const newMedia = new Media({
+        title: req.body.title,
+        description: req.body.description,
+        imageUrl: `http://localhost:5001/uploads/${req.file.filename}`,
+        createdBy: req.user.email
+      });
 
-        if (!req.file) {
-            return res.status(400).json({
-                message: "Please select an image file."
-            });
-        }
+      await newMedia.save();
 
-        try {
-            const newMedia = new Media({
-                title: req.body.title,
-                description: req.body.description,
-                fileName: req.file.filename,
-                imageUrl: `http://localhost:${PORT}/uploads/${req.file.filename}`
-            });
+      res.json(newMedia);
 
-            await newMedia.save();
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
 
-            res.status(201).json({
-                message: "Media uploaded successfully",
-                media: newMedia
-            });
+app.put("/api/media/:id", verifyToken, async (req, res) => {
 
-        } catch (error) {
-            console.log("UPLOAD ERROR:", error);
+  try {
 
-            res.status(500).json({
-                message: error.message
-            });
-        }
+    const updatedMedia = await Media.findByIdAndUpdate(
+      req.params.id,
+      {
+        title: req.body.title,
+        description: req.body.description
+      },
+      { new: true }
+    );
+
+    res.json(updatedMedia);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete("/api/media/:id", verifyToken, async (req, res) => {
+
+  try {
+
+    await Media.findByIdAndDelete(req.params.id);
+
+    res.json({
+      message: "Media deleted successfully"
     });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.put("/api/media/:id", async (req, res) => {
-    try {
-        if (!req.body.title || !req.body.description) {
-            return res.status(400).json({
-                message: "Title and description are required."
-            });
-        }
+/* =========================
+   SERVER
+========================= */
 
-        const updatedMedia = await Media.findByIdAndUpdate(
-            req.params.id,
-            {
-                title: req.body.title,
-                description: req.body.description
-            },
-            { new: true }
-        );
-
-        if (!updatedMedia) {
-            return res.status(404).json({
-                message: "Media not found."
-            });
-        }
-
-        res.json({
-            message: "Media updated successfully",
-            media: updatedMedia
-        });
-
-    } catch (error) {
-        console.log("UPDATE ERROR:", error);
-
-        res.status(500).json({
-            message: error.message
-        });
-    }
-});
-
-app.delete("/api/media/:id", async (req, res) => {
-    try {
-        const mediaToDelete = await Media.findById(req.params.id);
-
-        if (mediaToDelete) {
-            const filePath = path.join(
-                __dirname,
-                "uploads",
-                mediaToDelete.fileName
-            );
-
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-            }
-        }
-
-        await Media.findByIdAndDelete(req.params.id);
-
-        res.json({
-            message: "Media deleted successfully"
-        });
-
-    } catch (error) {
-        console.log("DELETE ERROR:", error);
-
-        res.status(500).json({
-            message: error.message
-        });
-    }
-});
+const PORT = 5001;
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

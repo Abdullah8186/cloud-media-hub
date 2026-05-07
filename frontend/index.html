@@ -1,113 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Media Hub</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloud Media Hub</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-    <div id="notification" class="notification"></div>
+  <header>
+    <h1>Cloud Media Hub</h1>
 
-    <header>
-        <h1>Cloud Media Hub</h1>
-        <p>Cloud-Native Multimedia Sharing Platform</p>
-    </header>
+    <div class="auth-buttons">
+      <button onclick="showLogin()">Login</button>
+      <button onclick="showRegister()">Register</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </header>
 
-    <main>
+  <!-- LOGIN -->
 
-        <section class="upload-section">
+  <div class="auth-box" id="loginBox">
 
-            <h2>Upload Media</h2>
+    <h2>Login</h2>
 
-            <form id="uploadForm">
+    <input type="email" id="loginEmail" placeholder="Email" />
 
-                <input 
-                    type="text"
-                    id="title"
-                    placeholder="Enter media title"
-                    required
-                >
+    <input type="password" id="loginPassword" placeholder="Password" />
 
-                <textarea 
-                    id="description"
-                    placeholder="Enter description"
-                    required
-                ></textarea>
+    <button onclick="login()">Login</button>
 
-                <input 
-                    type="file"
-                    id="mediaFile"
-                    accept="image/*"
-                    required
-                >
+  </div>
 
-                <button type="submit">
-                    Upload Media
-                </button>
+  <!-- REGISTER -->
 
-            </form>
+  <div class="auth-box hidden" id="registerBox">
 
-        </section>
+    <h2>Register</h2>
 
-        <section class="gallery-section">
+    <input type="text" id="registerUsername" placeholder="Username" />
 
-            <h2>Media Gallery</h2>
+    <input type="email" id="registerEmail" placeholder="Email" />
 
-            <input 
-                type="text"
-                id="searchInput"
-                placeholder="Search media by title..."
-                onkeyup="searchMedia()"
-            >
+    <input type="password" id="registerPassword" placeholder="Password" />
 
-            <div id="mediaContainer"></div>
+    <button onclick="register()">Register</button>
 
-        </section>
+  </div>
 
-    </main>
+  <!-- MAIN APP -->
 
-    <div id="imageModal" class="modal">
+  <main id="mainApp" class="hidden">
 
-        <span class="close">&times;</span>
+    <div class="upload-section">
 
-        <img class="modal-content" id="modalImage">
+      <h2>Upload Media</h2>
+
+      <input type="text" id="title" placeholder="Title" />
+
+      <input type="text" id="description" placeholder="Description" />
+
+      <input type="file" id="image" />
+
+      <button onclick="uploadMedia()">Upload</button>
 
     </div>
 
-    <div id="updateModal" class="update-modal">
+    <div class="search-section">
 
-        <div class="update-modal-content">
-
-            <span class="close" onclick="closeUpdateModal()">
-                &times;
-            </span>
-
-            <h2>Update Media</h2>
-
-            <input type="hidden" id="updateId">
-
-            <input 
-                type="text"
-                id="updateTitle"
-                placeholder="Update media title"
-            >
-
-            <textarea 
-                id="updateDescription"
-                placeholder="Update description"
-            ></textarea>
-
-            <button onclick="submitUpdate()">
-                Save Changes
-            </button>
-
-        </div>
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search by title..."
+        onkeyup="filterMedia()"
+      />
 
     </div>
 
-    <script src="app.js"></script>
+    <div class="gallery" id="gallery"></div>
+
+  </main>
+
+  <script src="app.js"></script>
 
 </body>
 </html>

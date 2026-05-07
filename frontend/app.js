@@ -1,236 +1,257 @@
-const uploadForm = document.getElementById("uploadForm");
-const mediaContainer = document.getElementById("mediaContainer");
+const API_URL = "http://localhost:5001/api";
 
-const API_URL = "http://localhost:5001/api/media";
+let allMedia = [];
 
-let notificationTimer;
+/* AUTH DISPLAY */
+
+function showLogin() {
+  document.getElementById("loginBox").classList.remove("hidden");
+  document.getElementById("registerBox").classList.add("hidden");
+}
+
+function showRegister() {
+  document.getElementById("registerBox").classList.remove("hidden");
+  document.getElementById("loginBox").classList.add("hidden");
+}
+
+function checkAuth() {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    document.getElementById("mainApp").classList.remove("hidden");
+    document.getElementById("loginBox").classList.add("hidden");
+    document.getElementById("registerBox").classList.add("hidden");
+  } else {
+    document.getElementById("mainApp").classList.add("hidden");
+    document.getElementById("loginBox").classList.remove("hidden");
+  }
+}
+
+/* REGISTER */
+
+async function register() {
+  const username = document.getElementById("registerUsername").value;
+  const email = document.getElementById("registerEmail").value;
+  const password = document.getElementById("registerPassword").value;
+
+  const res = await fetch(`${API_URL}/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ username, email, password })
+  });
+
+  const data = await res.json();
+
+  alert(data.message || "Registered successfully");
+
+  showLogin();
+}
+
+/* LOGIN */
+
+async function login() {
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const res = await fetch(`${API_URL}/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+
+  if (data.token) {
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("username", data.username);
+
+    alert("Login successful");
+
+    checkAuth();
+    loadMedia();
+  } else {
+    alert(data.message || "Login failed");
+  }
+}
+
+/* LOGOUT */
+
+function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("username");
+
+  alert("Logged out");
+
+  checkAuth();
+}
+
+/* MEDIA */
 
 async function loadMedia() {
-    try {
-        const response = await fetch(API_URL);
-        const mediaItems = await response.json();
+  const res = await fetch(`${API_URL}/media`);
+  allMedia = await res.json();
 
-        mediaContainer.innerHTML = "";
-
-        if (mediaItems.length === 0) {
-            mediaContainer.innerHTML = `<p class="empty-message">No media uploaded yet.</p>`;
-            return;
-        }
-
-        mediaItems.forEach(item => {
-            const mediaId = item._id || item.id;
-
-            const mediaCard = document.createElement("div");
-            mediaCard.classList.add("media-card");
-
-            mediaCard.innerHTML = `
-                <img 
-                    src="${item.imageUrl}" 
-                    alt="media image"
-                    onclick="openModal('${item.imageUrl}')"
-                    style="cursor:pointer;"
-                >
-
-                <h3>${item.title}</h3>
-                <p>${item.description}</p>
-
-                <div class="button-group">
-                    <button onclick="openUpdateModal('${mediaId}', '${item.title}', '${item.description}')">
-                        Edit
-                    </button>
-
-                    <button onclick="deleteMedia('${mediaId}')">
-                        Delete
-                    </button>
-                </div>
-            `;
-
-            mediaContainer.appendChild(mediaCard);
-        });
-
-    } catch (error) {
-        showNotification("Failed to load media", "error");
-    }
+  displayMedia(allMedia);
 }
 
-uploadForm.addEventListener("submit", async function (e) {
-    e.preventDefault();
+function displayMedia(mediaList) {
+  const gallery = document.getElementById("gallery");
+  gallery.innerHTML = "";
 
-    const title = document.getElementById("title").value.trim();
-    const description = document.getElementById("description").value.trim();
-    const file = document.getElementById("mediaFile").files[0];
-    const uploadButton = uploadForm.querySelector("button");
+  mediaList.forEach((item) => {
+    const card = document.createElement("div");
+    card.className = "card";
 
-    if (!title || !description || !file) {
-        showNotification("All fields are required", "error");
-        return;
-    }
+    card.innerHTML = `
+      <img src="${item.imageUrl}" alt="${item.title}" />
 
-    uploadButton.disabled = true;
-    uploadButton.innerText = "Uploading...";
+      <h3>${item.title}</h3>
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("mediaFile", file);
+      <p>${item.description}</p>
 
-    try {
-        const response = await fetch(API_URL, {
-            method: "POST",
-            body: formData
-        });
+      <div class="card-actions">
+        <button onclick="editMedia('${item._id}', '${escapeText(item.title)}', '${escapeText(item.description)}')">
+          Edit
+        </button>
 
-        const data = await response.json();
+        <button onclick="deleteMedia('${item._id}')">
+          Delete
+        </button>
+      </div>
+    `;
 
-        if (!response.ok) {
-            showNotification(data.message || "Upload failed", "error");
-            return;
-        }
+    gallery.appendChild(card);
+  });
+}
 
-        showNotification(data.message || "Media uploaded successfully", "success");
-        uploadForm.reset();
-        loadMedia();
+async function uploadMedia() {
+  const token = localStorage.getItem("token");
 
-    } catch (error) {
-        showNotification("Upload failed", "error");
-    } finally {
-        uploadButton.disabled = false;
-        uploadButton.innerText = "Upload Media";
-    }
-});
+  if (!token) {
+    alert("Please login first");
+    return;
+  }
+
+  const title = document.getElementById("title").value;
+  const description = document.getElementById("description").value;
+  const image = document.getElementById("image").files[0];
+
+  if (!title || !description || !image) {
+    alert("Please fill in title, description and choose an image");
+    return;
+  }
+
+  const formData = new FormData();
+
+  formData.append("title", title);
+  formData.append("description", description);
+  formData.append("image", image);
+
+  await fetch(`${API_URL}/media`, {
+    method: "POST",
+    headers: {
+      Authorization: token
+    },
+    body: formData
+  });
+
+  document.getElementById("title").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("image").value = "";
+
+  loadMedia();
+}
+
+/* EDIT INTERFACE */
+
+function editMedia(id, oldTitle, oldDescription) {
+  const card = event.target.closest(".card");
+
+  card.innerHTML = `
+    <div class="edit-box">
+      <h3>Edit Media</h3>
+
+      <input type="text" id="editTitle-${id}" value="${oldTitle}" />
+
+      <input type="text" id="editDescription-${id}" value="${oldDescription}" />
+
+      <button onclick="saveEdit('${id}')">Save Changes</button>
+
+      <button onclick="loadMedia()">Cancel</button>
+    </div>
+  `;
+}
+
+async function saveEdit(id) {
+  const token = localStorage.getItem("token");
+
+  const newTitle = document.getElementById(`editTitle-${id}`).value;
+  const newDescription = document.getElementById(`editDescription-${id}`).value;
+
+  if (!newTitle || !newDescription) {
+    alert("Please enter both title and description");
+    return;
+  }
+
+  await fetch(`${API_URL}/media/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token
+    },
+    body: JSON.stringify({
+      title: newTitle,
+      description: newDescription
+    })
+  });
+
+  loadMedia();
+}
+
+/* DELETE */
 
 async function deleteMedia(id) {
-    const confirmDelete = confirm("Are you sure you want to delete this media?");
+  const token = localStorage.getItem("token");
 
-    if (!confirmDelete) {
-        return;
+  if (!confirm("Are you sure you want to delete this media?")) return;
+
+  await fetch(`${API_URL}/media/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: token
     }
+  });
 
-    try {
-        const response = await fetch(`${API_URL}/${id}`, {
-            method: "DELETE"
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            showNotification(data.message || "Delete failed", "error");
-            return;
-        }
-
-        showNotification(data.message || "Media deleted successfully", "success");
-        loadMedia();
-
-    } catch (error) {
-        showNotification("Delete failed", "error");
-    }
+  loadMedia();
 }
 
-const modal = document.getElementById("imageModal");
-const modalImg = document.getElementById("modalImage");
-const closeBtn = document.querySelector(".close");
+/* SEARCH */
 
-function openModal(imageSrc) {
-    modal.style.display = "block";
-    modalImg.src = imageSrc;
+function filterMedia() {
+  const searchText = document.getElementById("searchInput").value.toLowerCase();
+
+  const filtered = allMedia.filter((item) =>
+    item.title.toLowerCase().includes(searchText)
+  );
+
+  displayMedia(filtered);
 }
 
-closeBtn.onclick = function () {
-    modal.style.display = "none";
-};
+/* SMALL FIX FOR QUOTES IN EDIT */
 
-window.onclick = function (event) {
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-};
+function escapeText(text) {
+  if (!text) return "";
 
-const updateModal = document.getElementById("updateModal");
-
-function openUpdateModal(id, title, description) {
-    updateModal.style.display = "block";
-
-    document.getElementById("updateId").value = id;
-    document.getElementById("updateTitle").value = title;
-    document.getElementById("updateDescription").value = description;
+  return text
+    .replace(/'/g, "&#39;")
+    .replace(/"/g, "&quot;");
 }
 
-function closeUpdateModal() {
-    updateModal.style.display = "none";
-}
+/* START */
 
-async function submitUpdate() {
-    const id = document.getElementById("updateId").value;
-    const title = document.getElementById("updateTitle").value.trim();
-    const description = document.getElementById("updateDescription").value.trim();
-
-    if (!title || !description) {
-        showNotification("Fields cannot be empty", "error");
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_URL}/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                title,
-                description
-            })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            showNotification(data.message || "Update failed", "error");
-            return;
-        }
-
-        closeUpdateModal();
-        showNotification(data.message || "Media updated successfully", "success");
-        loadMedia();
-
-    } catch (error) {
-        showNotification("Update failed", "error");
-    }
-}
-
-function showNotification(message, type = "success") {
-    const notification = document.getElementById("notification");
-
-    clearTimeout(notificationTimer);
-
-    notification.innerText = message;
-    notification.className = "notification";
-
-    if (type === "error") {
-        notification.classList.add("error");
-    } else {
-        notification.classList.add("success");
-    }
-
-    notification.style.display = "block";
-
-    notificationTimer = setTimeout(() => {
-        notification.style.display = "none";
-    }, 2000);
-}
-
-function searchMedia() {
-    const input = document.getElementById("searchInput").value.toLowerCase();
-    const cards = document.querySelectorAll(".media-card");
-
-    cards.forEach(card => {
-        const title = card.querySelector("h3").innerText.toLowerCase();
-
-        if (title.includes(input)) {
-            card.style.display = "block";
-        } else {
-            card.style.display = "none";
-        }
-    });
-}
-
+checkAuth();
 loadMedia();
