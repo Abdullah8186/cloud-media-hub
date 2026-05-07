@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Media Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="notification" class="notification"></div>
+
+    <header>
+        <h1>Cloud Media Hub</h1>
+        <p>Cloud-Native Multimedia Sharing Platform</p>
+    </header>
+
+    <main>
+
+        <section class="upload-section">
+
+            <h2>Upload Media</h2>
+
+            <form id="uploadForm">
+
+                <input 
+                    type="text"
+                    id="title"
+                    placeholder="Enter media title"
+                    required
+                >
+
+                <textarea 
+                    id="description"
+                    placeholder="Enter description"
+                    required
+                ></textarea>
+
+                <input 
+                    type="file"
+                    id="mediaFile"
+                    accept="image/*"
+                    required
+                >
+
+                <button type="submit">
+                    Upload Media
+                </button>
+
+            </form>
+
+        </section>
+
+        <section class="gallery-section">
+
+            <h2>Media Gallery</h2>
+
+            <input 
+                type="text"
+                id="searchInput"
+                placeholder="Search media by title..."
+                onkeyup="searchMedia()"
+            >
+
+            <div id="mediaContainer"></div>
+
+        </section>
+
+    </main>
+
+    <div id="imageModal" class="modal">
+
+        <span class="close">&times;</span>
+
+        <img class="modal-content" id="modalImage">
+
+    </div>
+
+    <div id="updateModal" class="update-modal">
+
+        <div class="update-modal-content">
+
+            <span class="close" onclick="closeUpdateModal()">
+                &times;
+            </span>
+
+            <h2>Update Media</h2>
+
+            <input type="hidden" id="updateId">
+
+            <input 
+                type="text"
+                id="updateTitle"
+                placeholder="Update media title"
+            >
+
+            <textarea 
+                id="updateDescription"
+                placeholder="Update description"
+            ></textarea>
+
+            <button onclick="submitUpdate()">
+                Save Changes
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
