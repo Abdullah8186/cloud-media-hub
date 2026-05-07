@@ -13,13 +13,13 @@ async function loadMedia() {
         mediaContainer.innerHTML = "";
 
         if (mediaItems.length === 0) {
-            mediaContainer.innerHTML = `
-                <p class="empty-message">No media uploaded yet.</p>
-            `;
+            mediaContainer.innerHTML = `<p class="empty-message">No media uploaded yet.</p>`;
             return;
         }
 
         mediaItems.forEach(item => {
+            const mediaId = item._id || item.id;
+
             const mediaCard = document.createElement("div");
             mediaCard.classList.add("media-card");
 
@@ -35,11 +35,11 @@ async function loadMedia() {
                 <p>${item.description}</p>
 
                 <div class="button-group">
-                    <button onclick="openUpdateModal(${item.id}, '${item.title}', '${item.description}')">
+                    <button onclick="openUpdateModal('${mediaId}', '${item.title}', '${item.description}')">
                         Edit
                     </button>
 
-                    <button onclick="deleteMedia(${item.id})">
+                    <button onclick="deleteMedia('${mediaId}')">
                         Delete
                     </button>
                 </div>
@@ -80,13 +80,7 @@ uploadForm.addEventListener("submit", async function (e) {
             body: formData
         });
 
-        let data;
-
-        try {
-            data = await response.json();
-        } catch {
-            data = { message: "Upload failed" };
-        }
+        const data = await response.json();
 
         if (!response.ok) {
             showNotification(data.message || "Upload failed", "error");
@@ -94,12 +88,11 @@ uploadForm.addEventListener("submit", async function (e) {
         }
 
         showNotification(data.message || "Media uploaded successfully", "success");
-
         uploadForm.reset();
         loadMedia();
 
     } catch (error) {
-        showNotification("Only JPG, PNG, JPEG and GIF images are allowed.", "error");
+        showNotification("Upload failed", "error");
     } finally {
         uploadButton.disabled = false;
         uploadButton.innerText = "Upload Media";
@@ -119,6 +112,11 @@ async function deleteMedia(id) {
         });
 
         const data = await response.json();
+
+        if (!response.ok) {
+            showNotification(data.message || "Delete failed", "error");
+            return;
+        }
 
         showNotification(data.message || "Media deleted successfully", "success");
         loadMedia();
