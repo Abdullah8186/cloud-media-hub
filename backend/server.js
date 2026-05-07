@@ -1,10 +1,11 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
+const mongoose = require("mongoose");
 const path = require("path");
 const fs = require("fs");
-
-require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -17,6 +18,30 @@ if (!fs.existsSync("uploads")) {
 }
 
 app.use("/uploads", express.static("uploads"));
+
+async function connectDB() {
+    try {
+        await mongoose.connect(process.env.MONGODB_URI);
+        console.log("MongoDB Connected");
+    } catch (error) {
+        console.log("MongoDB Connection Error:", error);
+    }
+}
+
+connectDB();
+
+const mediaSchema = new mongoose.Schema({
+    title: String,
+    description: String,
+    fileName: String,
+    imageUrl: String,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+const Media = mongoose.model("Media", mediaSchema);
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -37,7 +62,11 @@ const upload = multer({
 
     fileFilter: function (req, file, cb) {
         const allowedTypes = /jpeg|jpg|png|gif/;
-        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+
+        const extname = allowedTypes.test(
+            path.extname(file.originalname).toLowerCase()
+        );
+
         const mimetype = allowedTypes.test(file.mimetype);
 
         if (extname && mimetype) {
@@ -47,8 +76,6 @@ const upload = multer({
         }
     }
 });
-
-let mediaItems = [];
 
 app.get("/", (req, res) => {
     res.send("Cloud Media Hub API is running");
@@ -61,8 +88,21 @@ app.get("/api/health", (req, res) => {
     });
 });
 
+app.get("/api/media", async (req, res) => {
+    try {
+        const mediaItems = await Media.find().sort({ createdAt: -1 });
+        res.json(mediaItems);
+    } catch (error) {
+        console.log("FETCH MEDIA ERROR:", error);
+
+        res.status(500).json({
+            message: error.message
+        });
+    }
+});
+
 app.post("/api/media", (req, res) => {
-    upload.single("mediaFile")(req, res, function (err) {
+    upload.single("mediaFile")(req, res, async function (err) {
         if (err instanceof multer.MulterError) {
             return res.status(400).json({
                 message: "File is too large. Maximum size is 5MB."
@@ -87,69 +127,97 @@ app.post("/api/media", (req, res) => {
             });
         }
 
-        const newMedia = {
-            id: Date.now(),
-            title: req.body.title,
-            description: req.body.description,
-            fileName: req.file.filename,
-            imageUrl: `http://localhost:${PORT}/uploads/${req.file.filename}`
-        };
+        try {
+            const newMedia = new Media({
+                title: req.body.title,
+                description: req.body.description,
+                fileName: req.file.filename,
+                imageUrl: `http://localhost:${PORT}/uploads/${req.file.filename}`
+            });
 
-        mediaItems.push(newMedia);
+            await newMedia.save();
 
-        res.status(201).json({
-            message: "Media uploaded successfully",
-            media: newMedia
-        });
-    });
-});
+            res.status(201).json({
+                message: "Media uploaded successfully",
+                media: newMedia
+            });
 
-app.get("/api/media", (req, res) => {
-    res.json(mediaItems);
-});
+        } catch (error) {
+            console.log("UPLOAD ERROR:", error);
 
-app.put("/api/media/:id", (req, res) => {
-    const id = parseInt(req.params.id);
-    const mediaItem = mediaItems.find(item => item.id === id);
-
-    if (!mediaItem) {
-        return res.status(404).json({
-            message: "Media not found."
-        });
-    }
-
-    if (!req.body.title || !req.body.description) {
-        return res.status(400).json({
-            message: "Title and description are required."
-        });
-    }
-
-    mediaItem.title = req.body.title;
-    mediaItem.description = req.body.description;
-
-    res.json({
-        message: "Media updated successfully",
-        media: mediaItem
-    });
-});
-
-app.delete("/api/media/:id", (req, res) => {
-    const id = parseInt(req.params.id);
-    const mediaToDelete = mediaItems.find(item => item.id === id);
-
-    if (mediaToDelete) {
-        const filePath = path.join(__dirname, "uploads", mediaToDelete.fileName);
-
-        if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
+            res.status(500).json({
+                message: error.message
+            });
         }
-    }
-
-    mediaItems = mediaItems.filter(item => item.id !== id);
-
-    res.json({
-        message: "Media deleted successfully"
     });
+});
+
+app.put("/api/media/:id", async (req, res) => {
+    try {
+        if (!req.body.title || !req.body.description) {
+            return res.status(400).json({
+                message: "Title and description are required."
+            });
+        }
+
+        const updatedMedia = await Media.findByIdAndUpdate(
+            req.params.id,
+            {
+                title: req.body.title,
+                description: req.body.description
+            },
+            { new: true }
+        );
+
+        if (!updatedMedia) {
+            return res.status(404).json({
+                message: "Media not found."
+            });
+        }
+
+        res.json({
+            message: "Media updated successfully",
+            media: updatedMedia
+        });
+
+    } catch (error) {
+        console.log("UPDATE ERROR:", error);
+
+        res.status(500).json({
+            message: error.message
+        });
+    }
+});
+
+app.delete("/api/media/:id", async (req, res) => {
+    try {
+        const mediaToDelete = await Media.findById(req.params.id);
+
+        if (mediaToDelete) {
+            const filePath = path.join(
+                __dirname,
+                "uploads",
+                mediaToDelete.fileName
+            );
+
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
+
+        await Media.findByIdAndDelete(req.params.id);
+
+        res.json({
+            message: "Media deleted successfully"
+        });
+
+    } catch (error) {
+        console.log("DELETE ERROR:", error);
+
+        res.status(500).json({
+            message: error.message
+        });
+    }
 });
 
 app.listen(PORT, () => {
