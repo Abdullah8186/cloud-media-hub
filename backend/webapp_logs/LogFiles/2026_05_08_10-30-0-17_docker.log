@@ -1,0 +1,171 @@
+2026-05-08T02:13:43.1894197Z State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-05-08T02:13:44.0578142Z State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-05-08T02:13:44.0580678Z Container start method called.
+2026-05-08T02:13:44.0611986Z State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.5:13209/appsvc/node:22-lts_20260115.4.tuxprod for cloud-media-hub-api., DetailsLevel: INFO
+2026-05-08T02:13:44.0613477Z Establishing network.
+2026-05-08T02:13:44.0614999Z Pulling image: appsvc/node:22-lts_20260115.4.tuxprod.
+2026-05-08T02:13:45.5254787Z Image appsvc/node:22-lts_20260115.4.tuxprod is pulled from registry 10.1.0.5:13209
+2026-05-08T02:13:45.5256796Z Container is starting.
+2026-05-08T02:13:45.5257767Z State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for cloud-media-hub-api., DetailsLevel: INFO
+2026-05-08T02:13:45.5259076Z Establishing user namespace if not established already.
+2026-05-08T02:13:45.5260276Z Establishing network if not established already.
+2026-05-08T02:13:45.5262021Z Mounting volumes.
+2026-05-08T02:13:45.5270047Z Nested mountpoint 
+2026-05-08T02:13:45.5395815Z Nested mountpoint volatile/logs
+2026-05-08T02:13:45.5427163Z Nested mountpoint 
+2026-05-08T02:13:45.5746043Z Nested mountpoint 
+2026-05-08T02:13:45.5753246Z Nested mountpoint 
+2026-05-08T02:13:45.5760646Z Nested mountpoint 
+2026-05-08T02:13:45.5778537Z Nested mountpoint 
+2026-05-08T02:13:46.2689289Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for cloud-media-hub-api. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-05-08T02:13:46.2690608Z Creating container.
+2026-05-08T02:13:46.2691867Z Creating pipes for streaming container io.
+2026-05-08T02:13:46.2698380Z Creating stdout named pipe at /podr/container/pipe/f6edd15bb71f_cloud-media-hub-api/stdout_e3c57323f7c8448a99795e63c3ff36cc.
+2026-05-08T02:13:46.2708679Z Successfully created stdout named pipe at: /podr/container/pipe/f6edd15bb71f_cloud-media-hub-api/stdout_e3c57323f7c8448a99795e63c3ff36cc.
+2026-05-08T02:13:46.2725043Z Opening named pipe /podr/container/pipe/f6edd15bb71f_cloud-media-hub-api/stdout_e3c57323f7c8448a99795e63c3ff36cc for reading in non-blocking mode.
+2026-05-08T02:13:46.2727361Z Successfully opened named pipe: /podr/container/pipe/f6edd15bb71f_cloud-media-hub-api/stdout_e3c57323f7c8448a99795e63c3ff36cc.
+2026-05-08T02:13:46.2729238Z Successfully removed non-blocking flag from /podr/container/pipe/f6edd15bb71f_cloud-media-hub-api/stdout_e3c57323f7c8448a99795e63c3ff36cc.
+2026-05-08T02:13:46.2740166Z Creating stderr named pipe at /podr/container/pipe/f6edd15bb71f_cloud-media-hub-api/stderr_ebddb4fbd6f14ccb98af0c680b9b74d6.
+2026-05-08T02:13:46.2741931Z Successfully created stderr named pipe at: /podr/container/pipe/f6edd15bb71f_cloud-media-hub-api/stderr_ebddb4fbd6f14ccb98af0c680b9b74d6.
+2026-05-08T02:13:46.2743936Z Opening named pipe /podr/container/pipe/f6edd15bb71f_cloud-media-hub-api/stderr_ebddb4fbd6f14ccb98af0c680b9b74d6 for reading in non-blocking mode.
+2026-05-08T02:13:46.2745340Z Successfully opened named pipe: /podr/container/pipe/f6edd15bb71f_cloud-media-hub-api/stderr_ebddb4fbd6f14ccb98af0c680b9b74d6.
+2026-05-08T02:13:46.2752189Z Successfully removed non-blocking flag from /podr/container/pipe/f6edd15bb71f_cloud-media-hub-api/stderr_ebddb4fbd6f14ccb98af0c680b9b74d6.
+2026-05-08T02:13:46.2759800Z Creating container with image: appsvc/node:22-lts_20260115.4.tuxprod from registry: 10.1.0.5:13209 and fully qualified image name: 10.1.0.5:13209/appsvc/node:22-lts_20260115.4.tuxprod
+2026-05-08T02:13:46.7586083Z Starting container: f6edd15bb71f_cloud-media-hub-api.
+2026-05-08T02:13:46.8089810Z Starting watchers and probes.
+2026-05-08T02:13:46.8148533Z Starting metrics collection.
+2026-05-08T02:13:46.8151156Z Container is running.
+2026-05-08T02:13:46.8153576Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container cloud-media-hub-api successfully created and is running., DetailsLevel: INFO
+2026-05-08T02:13:46.8689928Z Container start method finished after 2809 ms.
+2026-05-08T02:13:46.8695848Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container cloud-media-hub-api successfully created and is running., DetailsLevel: INFO
+2026-05-08T02:13:46.8851826Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-05-08T02:13:56.9416294Z Site startup probe succeeded after 10.040334 seconds.
+2026-05-08T02:13:57.0201742Z State: Starting, Action: WarmUpProbeSucceeded, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site startup probe succeeded after 10.040334 seconds., DetailsLevel: INFO
+2026-05-08T02:13:57.2331613Z Site started.
+2026-05-08T02:13:57.2333981Z State: Started, Action: None, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 05/08/2026 02:13:57 (UTC), DetailsLevel: INFO
+2026-05-08T02:13:57.2469357Z Site is running with patch version NODE 22.22.0
+2026-05-08T02:15:44.0873800Z State: Starting, Action: EstablishingSiteNetworks, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-05-08T02:15:44.6521785Z State: Starting, Action: StartingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: , DetailsLevel: INFO
+2026-05-08T02:15:44.6523569Z Container start method called.
+2026-05-08T02:15:44.6524141Z State: Starting, Action: PullingImage, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pulling image 10.1.0.4:13209/appsvc/node:22-lts_20260115.4.tuxprod for cloud-media-hub-api., DetailsLevel: INFO
+2026-05-08T02:15:44.6539896Z Establishing network.
+2026-05-08T02:15:44.6548179Z Pulling image: appsvc/node:22-lts_20260115.4.tuxprod.
+2026-05-08T02:15:44.9170516Z Image appsvc/node:22-lts_20260115.4.tuxprod is pulled from registry 10.1.0.4:13209
+2026-05-08T02:15:44.9171419Z Container is starting.
+2026-05-08T02:15:44.9172016Z State: Starting, Action: MountingVolumes, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Mounting volumes for cloud-media-hub-api., DetailsLevel: INFO
+2026-05-08T02:15:44.9178165Z Establishing user namespace if not established already.
+2026-05-08T02:15:44.9179933Z Establishing network if not established already.
+2026-05-08T02:15:44.9181421Z Mounting volumes.
+2026-05-08T02:15:44.9186176Z Nested mountpoint 
+2026-05-08T02:15:44.9228926Z Nested mountpoint volatile/logs
+2026-05-08T02:15:44.9253470Z Nested mountpoint 
+2026-05-08T02:15:44.9312184Z Nested mountpoint 
+2026-05-08T02:15:44.9328547Z Nested mountpoint 
+2026-05-08T02:15:44.9353231Z Nested mountpoint 
+2026-05-08T02:15:44.9425365Z Nested mountpoint 
+2026-05-08T02:15:45.2236748Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Finished pulling container image and mounting volumes for cloud-media-hub-api. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-05-08T02:15:45.2239253Z Creating container.
+2026-05-08T02:15:45.2240831Z Creating pipes for streaming container io.
+2026-05-08T02:15:45.2275944Z Creating stdout named pipe at /podr/container/pipe/bdaf5350607b_cloud-media-hub-api/stdout_99e738d37d264633a0c221627e852d3e.
+2026-05-08T02:15:45.2288837Z Successfully created stdout named pipe at: /podr/container/pipe/bdaf5350607b_cloud-media-hub-api/stdout_99e738d37d264633a0c221627e852d3e.
+2026-05-08T02:15:45.2292393Z Opening named pipe /podr/container/pipe/bdaf5350607b_cloud-media-hub-api/stdout_99e738d37d264633a0c221627e852d3e for reading in non-blocking mode.
+2026-05-08T02:15:45.2294024Z Successfully opened named pipe: /podr/container/pipe/bdaf5350607b_cloud-media-hub-api/stdout_99e738d37d264633a0c221627e852d3e.
+2026-05-08T02:15:45.2295885Z Successfully removed non-blocking flag from /podr/container/pipe/bdaf5350607b_cloud-media-hub-api/stdout_99e738d37d264633a0c221627e852d3e.
+2026-05-08T02:15:45.2314836Z Creating stderr named pipe at /podr/container/pipe/bdaf5350607b_cloud-media-hub-api/stderr_55e6240e40f64bf9aaa23499639704f6.
+2026-05-08T02:15:45.2317010Z Successfully created stderr named pipe at: /podr/container/pipe/bdaf5350607b_cloud-media-hub-api/stderr_55e6240e40f64bf9aaa23499639704f6.
+2026-05-08T02:15:45.2318527Z Opening named pipe /podr/container/pipe/bdaf5350607b_cloud-media-hub-api/stderr_55e6240e40f64bf9aaa23499639704f6 for reading in non-blocking mode.
+2026-05-08T02:15:45.2319944Z Successfully opened named pipe: /podr/container/pipe/bdaf5350607b_cloud-media-hub-api/stderr_55e6240e40f64bf9aaa23499639704f6.
+2026-05-08T02:15:45.2320956Z Successfully removed non-blocking flag from /podr/container/pipe/bdaf5350607b_cloud-media-hub-api/stderr_55e6240e40f64bf9aaa23499639704f6.
+2026-05-08T02:15:45.2361320Z Creating container with image: appsvc/node:22-lts_20260115.4.tuxprod from registry: 10.1.0.4:13209 and fully qualified image name: 10.1.0.4:13209/appsvc/node:22-lts_20260115.4.tuxprod
+2026-05-08T02:15:45.9627688Z Starting container: bdaf5350607b_cloud-media-hub-api.
+2026-05-08T02:15:46.0034581Z Starting watchers and probes.
+2026-05-08T02:15:46.0038152Z Starting metrics collection.
+2026-05-08T02:15:46.0039819Z Container is running.
+2026-05-08T02:15:46.0040656Z State: Starting, Action: CreatingContainer, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container cloud-media-hub-api successfully created and is running., DetailsLevel: INFO
+2026-05-08T02:15:46.0624254Z Container start method finished after 1409 ms.
+2026-05-08T02:15:46.0629755Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Container cloud-media-hub-api successfully created and is running., DetailsLevel: INFO
+2026-05-08T02:15:46.0630223Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-05-08T02:15:57.0718493Z Container has finished running with exit code: 1.
+2026-05-08T02:15:57.0720242Z Container is terminating. Grace period: 5 seconds.
+2026-05-08T02:15:57.0758566Z Stop and delete container. Retry count = 0
+2026-05-08T02:15:57.0760054Z Stopping container: bdaf5350607b_cloud-media-hub-api.
+2026-05-08T02:15:57.1237718Z Deleting container: bdaf5350607b_cloud-media-hub-api. Retry count = 0
+2026-05-08T02:15:57.3572060Z Container spec TerminationMessagePolicy  path 
+2026-05-08T02:15:57.3573893Z Container is terminated. Total time elapsed: 283 ms.
+2026-05-08T02:15:57.3575185Z Site container: cloud-media-hub-api terminated during site startup.
+2026-05-08T02:15:57.3607005Z State: Stopping, Action: CancellingStartup, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site container: cloud-media-hub-api terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-05-08T02:15:57.3872689Z Site startup probe failed after 11.2942238 seconds.
+2026-05-08T02:15:57.4789489Z State: Stopping, Action: CancellingStartup, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site container: cloud-media-hub-api terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-05-08T02:15:57.4883352Z Failed to start site. Revert by stopping site.
+2026-05-08T02:15:57.4887549Z State: Stopping, Action: StoppingSite, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site container: cloud-media-hub-api terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-05-08T02:15:57.5068474Z State: Stopping, Action: StoppingSiteContainers, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site container: cloud-media-hub-api terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-05-08T02:15:57.5069490Z Site: cloud-media-hub-api stopped.
+2026-05-08T02:16:17.7940306Z State: Stopping, Action: StoppingSite, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 05/08/2026 02:13:57 (UTC), DetailsLevel: INFO
+2026-05-08T02:16:17.7948137Z State: Stopping, Action: StoppingSiteContainers, LastError: , LastErrorTimestamp: 01/01/0001 00:00:00, LastErrorDetails: , Details: Site started at 05/08/2026 02:13:57 (UTC), DetailsLevel: INFO
+2026-05-08T02:16:17.7949374Z Container is terminating. Grace period: 5 seconds.
+2026-05-08T02:16:17.8313770Z Stop and delete container. Retry count = 0
+2026-05-08T02:16:17.8325657Z Stopping container: f6edd15bb71f_cloud-media-hub-api.
+2026-05-08T02:16:22.8316949Z Deleting container: f6edd15bb71f_cloud-media-hub-api. Retry count = 0
+2026-05-08T02:16:22.9340341Z Container spec TerminationMessagePolicy  path 
+2026-05-08T02:16:22.9342358Z Container is terminated. Total time elapsed: 5139 ms.
+2026-05-08T02:16:22.9351851Z Site: cloud-media-hub-api stopped.
+2026-05-08T02:15:57.5128156Z State: Stopping, Action: UnmountingVolumes, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site container: cloud-media-hub-api terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-05-08T02:15:57.6936218Z State: Stopping, Action: StoppingSiteNetworks, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site container: cloud-media-hub-api terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-05-08T02:15:57.7625914Z State: Stopped, Action: None, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site stopped at 05/08/2026 02:15:57 (UTC), DetailsLevel: ERR
+2026-05-08T02:15:57.7728655Z State: Stopped, Action: None, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site stopped at 05/08/2026 02:15:57 (UTC), DetailsLevel: ERR
+2026-05-08T02:33:23.5364818Z State: Starting, Action: EstablishingSiteNetworks, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site stopped at 05/08/2026 02:15:57 (UTC), DetailsLevel: ERR
+2026-05-08T02:33:24.0670522Z State: Starting, Action: StartingSiteContainers, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site stopped at 05/08/2026 02:15:57 (UTC), DetailsLevel: ERR
+2026-05-08T02:33:24.0672602Z Container start method called.
+2026-05-08T02:33:24.0673266Z State: Starting, Action: PullingImage, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Pulling image 10.1.0.4:13209/appsvc/node:22-lts_20260115.4.tuxprod for cloud-media-hub-api., DetailsLevel: INFO
+2026-05-08T02:33:24.0674545Z Establishing network.
+2026-05-08T02:33:24.0676232Z Pulling image: appsvc/node:22-lts_20260115.4.tuxprod.
+2026-05-08T02:33:24.2194069Z Container is starting.
+2026-05-08T02:33:24.2195168Z State: Starting, Action: MountingVolumes, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Mounting volumes for cloud-media-hub-api., DetailsLevel: INFO
+2026-05-08T02:33:24.2196386Z Establishing user namespace if not established already.
+2026-05-08T02:33:24.2197814Z Establishing network if not established already.
+2026-05-08T02:33:24.2199277Z Mounting volumes.
+2026-05-08T02:33:24.2201197Z Nested mountpoint 
+2026-05-08T02:33:24.2233178Z Nested mountpoint volatile/logs
+2026-05-08T02:33:24.2259412Z Nested mountpoint 
+2026-05-08T02:33:24.2279058Z Nested mountpoint 
+2026-05-08T02:33:24.2300994Z Nested mountpoint 
+2026-05-08T02:33:24.2324088Z Nested mountpoint 
+2026-05-08T02:33:24.2371833Z Nested mountpoint 
+2026-05-08T02:33:24.3685537Z State: Starting, Action: CreatingContainer, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Finished pulling container image and mounting volumes for cloud-media-hub-api. Allocatinng the rest of the container resources to finish container creation., DetailsLevel: INFO
+2026-05-08T02:33:24.3686950Z Creating container.
+2026-05-08T02:33:24.3689673Z Creating pipes for streaming container io.
+2026-05-08T02:33:24.3691294Z Creating stdout named pipe at /podr/container/pipe/c25140d0d543_cloud-media-hub-api/stdout_f0432ebc4dea4db088a57dd48e37cc6b.
+2026-05-08T02:33:24.3696188Z Successfully created stdout named pipe at: /podr/container/pipe/c25140d0d543_cloud-media-hub-api/stdout_f0432ebc4dea4db088a57dd48e37cc6b.
+2026-05-08T02:33:24.3697882Z Opening named pipe /podr/container/pipe/c25140d0d543_cloud-media-hub-api/stdout_f0432ebc4dea4db088a57dd48e37cc6b for reading in non-blocking mode.
+2026-05-08T02:33:24.3699638Z Successfully opened named pipe: /podr/container/pipe/c25140d0d543_cloud-media-hub-api/stdout_f0432ebc4dea4db088a57dd48e37cc6b.
+2026-05-08T02:33:24.3700922Z Successfully removed non-blocking flag from /podr/container/pipe/c25140d0d543_cloud-media-hub-api/stdout_f0432ebc4dea4db088a57dd48e37cc6b.
+2026-05-08T02:33:24.3707872Z Creating stderr named pipe at /podr/container/pipe/c25140d0d543_cloud-media-hub-api/stderr_3cfc494a348c47e5ac9fd1c54dce3ac1.
+2026-05-08T02:33:24.3711801Z Successfully created stderr named pipe at: /podr/container/pipe/c25140d0d543_cloud-media-hub-api/stderr_3cfc494a348c47e5ac9fd1c54dce3ac1.
+2026-05-08T02:33:24.3713588Z Opening named pipe /podr/container/pipe/c25140d0d543_cloud-media-hub-api/stderr_3cfc494a348c47e5ac9fd1c54dce3ac1 for reading in non-blocking mode.
+2026-05-08T02:33:24.3715098Z Successfully opened named pipe: /podr/container/pipe/c25140d0d543_cloud-media-hub-api/stderr_3cfc494a348c47e5ac9fd1c54dce3ac1.
+2026-05-08T02:33:24.3716159Z Successfully removed non-blocking flag from /podr/container/pipe/c25140d0d543_cloud-media-hub-api/stderr_3cfc494a348c47e5ac9fd1c54dce3ac1.
+2026-05-08T02:33:24.3720447Z Creating container with image: appsvc/node:22-lts_20260115.4.tuxprod from registry: 10.1.0.4:13209 and fully qualified image name: 10.1.0.4:13209/appsvc/node:22-lts_20260115.4.tuxprod
+2026-05-08T02:33:24.7573043Z Starting container: c25140d0d543_cloud-media-hub-api.
+2026-05-08T02:33:24.7832345Z Starting watchers and probes.
+2026-05-08T02:33:24.7835431Z Starting metrics collection.
+2026-05-08T02:33:24.7837006Z Container is running.
+2026-05-08T02:33:24.7838620Z State: Starting, Action: CreatingContainer, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Container cloud-media-hub-api successfully created and is running., DetailsLevel: INFO
+2026-05-08T02:33:24.8087881Z Container start method finished after 741 ms.
+2026-05-08T02:33:24.8105340Z State: Starting, Action: InitiatingSiteWarmUpProbe, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Container cloud-media-hub-api successfully created and is running., DetailsLevel: INFO
+2026-05-08T02:33:24.8106359Z State: Starting, Action: WaitingForSiteWarmUpProbeSuccess, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Pinging warmup path to ensure container is ready to receive requests., DetailsLevel: INFO
+2026-05-08T02:33:33.6861558Z Container has finished running with exit code: 1.
+2026-05-08T02:33:33.6867072Z Container is terminating. Grace period: 5 seconds.
+2026-05-08T02:33:33.6872889Z Stop and delete container. Retry count = 0
+2026-05-08T02:33:33.6874916Z Stopping container: c25140d0d543_cloud-media-hub-api.
+2026-05-08T02:33:33.7266322Z Deleting container: c25140d0d543_cloud-media-hub-api. Retry count = 0
+2026-05-08T02:33:33.8741151Z Container spec TerminationMessagePolicy  path 
+2026-05-08T02:33:33.8802949Z Container is terminated. Total time elapsed: 193 ms.
+2026-05-08T02:33:33.8819233Z Site container: cloud-media-hub-api terminated during site startup.
+2026-05-08T02:33:33.8820281Z State: Stopping, Action: CancellingStartup, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:15:57, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site container: cloud-media-hub-api terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-05-08T02:33:33.8933105Z Site startup probe failed after 9.0803707 seconds.
+2026-05-08T02:33:33.9746503Z AppInsights has been disabled for site: 'cloud-media-hub-api' beginning with the next cold start attempt on this instance due to repeated startup failures (2). This is to ensure auto attach is not interfering with the successful startup of the app. App insights can be re-enabled on this instance if a redeployment of the app content is performed or there is image update.
+2026-05-08T02:33:33.9828122Z State: Stopping, Action: CancellingStartup, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:33:33, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site container: cloud-media-hub-api terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-05-08T02:33:33.9992602Z Failed to start site. Revert by stopping site.
+2026-05-08T02:33:33.9993680Z State: Stopping, Action: StoppingSite, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:33:33, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site container: cloud-media-hub-api terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-05-08T02:33:33.9997581Z State: Stopping, Action: StoppingSiteContainers, LastError: ContainerTimeout, LastErrorTimestamp: 05/08/2026 02:33:33, LastErrorDetails: Container did not start within expected time limit of 230s. Please inspect your container logs for more details., Details: Site container: cloud-media-hub-api terminated during site startup. Cancelling site startup., DetailsLevel: ERR
+2026-05-08T02:33:33.9999381Z Site: cloud-media-hub-api stopped.

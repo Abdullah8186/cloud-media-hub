@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloud Media Hub</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <header>
+    <h1>Cloud Media Hub</h1>
+
+    <div class="auth-buttons">
+      <button onclick="showLogin()">Login</button>
+      <button onclick="showRegister()">Register</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- LOGIN -->
+
+  <div class="auth-box" id="loginBox">
+
+    <h2>Login</h2>
+
+    <input type="email" id="loginEmail" placeholder="Email" />
+
+    <input type="password" id="loginPassword" placeholder="Password" />
+
+    <button onclick="login()">Login</button>
+
+  </div>
+
+  <!-- REGISTER -->
+
+  <div class="auth-box hidden" id="registerBox">
+
+    <h2>Register</h2>
+
+    <input type="text" id="registerUsername" placeholder="Username" />
+
+    <input type="email" id="registerEmail" placeholder="Email" />
+
+    <input type="password" id="registerPassword" placeholder="Password" />
+
+    <button onclick="register()">Register</button>
+
+  </div>
+
+  <!-- MAIN APP -->
+
+  <main id="mainApp" class="hidden">
+
+    <div class="upload-section">
+
+      <h2>Upload Media</h2>
+
+      <input type="text" id="title" placeholder="Title" />
+
+      <input type="text" id="description" placeholder="Description" />
+
+      <input type="file" id="image" />
+
+      <button onclick="uploadMedia()">Upload</button>
+
+    </div>
+
+    <div class="search-section">
+
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search by title..."
+        onkeyup="filterMedia()"
+      />
+
+    </div>
+
+    <div class="gallery" id="gallery"></div>
+
+  </main>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
