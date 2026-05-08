@@ -4,19 +4,34 @@ const express = require("express");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const cors = require("cors");
-const path = require("path");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { BlobServiceClient } = require("@azure/storage-blob");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+/* =========================
+   MONGODB CONNECTION
+========================= */
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
+
+/* =========================
+   AZURE BLOB CONNECTION
+========================= */
+
+const blobServiceClient = BlobServiceClient.fromConnectionString(
+  process.env.AZURE_STORAGE_CONNECTION_STRING
+);
+
+const containerClient = blobServiceClient.getContainerClient(
+  process.env.AZURE_CONTAINER_NAME
+);
 
 /* =========================
    USER MODEL
@@ -48,20 +63,12 @@ const mediaSchema = new mongoose.Schema({
 const Media = mongoose.model("Media", mediaSchema);
 
 /* =========================
-   MULTER
+   MULTER MEMORY STORAGE
 ========================= */
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
+const upload = multer({
+  storage: multer.memoryStorage()
 });
-
-const upload = multer({ storage });
 
 /* =========================
    AUTH MIDDLEWARE
@@ -120,7 +127,6 @@ app.post("/api/register", async (req, res) => {
 
 app.post("/api/login", async (req, res) => {
   try {
-
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
@@ -170,35 +176,45 @@ app.get("/api/media", async (req, res) => {
   }
 });
 
-app.post(
-  "/api/media",
-  verifyToken,
-  upload.single("image"),
-  async (req, res) => {
+app.post("/api/media", verifyToken, upload.single("image"), async (req, res) => {
+  try {
+    const { title, description } = req.body;
 
-    try {
-
-      const newMedia = new Media({
-        title: req.body.title,
-        description: req.body.description,
-        imageUrl: `http://localhost:5001/uploads/${req.file.filename}`,
-        createdBy: req.user.email
+    if (!req.file) {
+      return res.status(400).json({
+        message: "No image file uploaded"
       });
-
-      await newMedia.save();
-
-      res.json(newMedia);
-
-    } catch (err) {
-      res.status(500).json({ error: err.message });
     }
+
+    const blobName = Date.now() + "-" + req.file.originalname;
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+    await blockBlobClient.uploadData(req.file.buffer, {
+      blobHTTPHeaders: {
+        blobContentType: req.file.mimetype
+      }
+    });
+
+    const imageUrl = blockBlobClient.url;
+
+    const newMedia = new Media({
+      title,
+      description,
+      imageUrl,
+      createdBy: req.user.email
+    });
+
+    await newMedia.save();
+
+    res.json(newMedia);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-);
+});
 
 app.put("/api/media/:id", verifyToken, async (req, res) => {
-
   try {
-
     const updatedMedia = await Media.findByIdAndUpdate(
       req.params.id,
       {
@@ -216,9 +232,7 @@ app.put("/api/media/:id", verifyToken, async (req, res) => {
 });
 
 app.delete("/api/media/:id", verifyToken, async (req, res) => {
-
   try {
-
     await Media.findByIdAndDelete(req.params.id);
 
     res.json({
